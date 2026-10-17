@@ -1,0 +1,8 @@
+# Compatible version ranges, not a lockfile for the original run.
+numpy>=1.24,<3
+pandas>=1.5,<3
+scikit-learn>=1.2,<2
+matplotlib>=3.7,<4
+seaborn>=0.12,<1
+ipykernel>=6,<8
+jupyterlab>=4,<5

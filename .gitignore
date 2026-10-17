@@ -1,0 +1,44 @@
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments and local configuration
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# Jupyter and IPython
+.ipynb_checkpoints/
+.ipython/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local datasets are not redistributed (keep the empty directory placeholder).
+creditcard.csv
+**/creditcard.csv
+data/*
+!data/.gitkeep
+
+# Exported charts in images/ are intentionally tracked.
+
+# Saved models and temporary outputs
+*.pkl
+*.joblib
+*.log
+*.tmp
+*.temp
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+models/
+outputs/
