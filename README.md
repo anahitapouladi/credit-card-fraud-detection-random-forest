@@ -11,7 +11,7 @@ This is a **learning and portfolio project**, not a production fraud detection s
 | Item | Approach |
 |---|---|
 | Task | Binary classification: legitimate (`0`) vs. fraud (`1`) |
-| Dataset | [Credit Card Fraud Detection — ULB / Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) |
+| Dataset | [Original ULB dataset on Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) · [Direct ZIP download (GitHub Release)](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/download/dataset-v1.0/creditcard.zip) |
 | Models | Logistic Regression baseline; Random Forest |
 | Data split | Stratified train / validation / test (approximately 60% / 20% / 20%) |
 | Primary evaluation | Average precision (AP), precision, recall, F1, and confusion matrices |
@@ -96,7 +96,7 @@ The notebook includes short explanations of **Gini impurity, bootstrap sampling,
 ## Repository layout
 
 ```text
-credit-card-fraud-detection/
+credit-card-fraud-detection-random-forest/
 ├── README.md
 ├── .gitignore
 ├── requirements.txt
@@ -115,19 +115,39 @@ credit-card-fraud-detection/
     └── .gitkeep
 ```
 
-The raw CSV is **not included** in this repository.
+The raw CSV is **not tracked in the Git repository**. A downloadable archive is provided separately in [GitHub Releases](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/tag/dataset-v1.0).
 
-## Run the notebook
+## Download the dataset (no Kaggle account required)
 
-**1. Get the dataset.** Download `creditcard.csv` from the [original Kaggle dataset page](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) and put it in `data/creditcard.csv`.
+**[Download `creditcard.zip` directly (about 63.3 MB)](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/download/dataset-v1.0/creditcard.zip)**
 
-**2. Install the dependencies** in a Python environment:
+This link downloads the dataset archive from this project's [GitHub Release (`dataset-v1.0`)](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/tag/dataset-v1.0). You do **not** need a Kaggle account to use this download.
+
+1. Download `creditcard.zip` from the link above.
+2. Extract the archive to find `creditcard.csv` and `DATASET_LICENSE.txt`.
+3. Copy **`creditcard.csv`** into the project's **`data/`** folder. The final location should be `data/creditcard.csv`.
+4. Keep `DATASET_LICENSE.txt` for source and license information; it is not a model input.
+
+**Alternative:** Obtain the CSV from the [original ULB dataset listing on Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud). The GitHub Release is a convenience copy, **not an official new version of the source dataset**. Its `dataset-v1.0` tag identifies the download package for this project.
+
+## Run the notebook locally
+
+**1. Get the project.** Clone this repository, or use GitHub's **Code → Download ZIP** and extract it:
+
+```bash
+git clone https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest.git
+cd credit-card-fraud-detection-random-forest
+```
+
+**2. Get the dataset.** Follow the [download and extraction steps above](#download-the-dataset-no-kaggle-account-required) so that `data/creditcard.csv` exists.
+
+**3. Install the dependencies** in a Python environment:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-**3. Open the [notebook](notebooks/credit_card_fraud_detection_random_forest.ipynb)** in JupyterLab or VS Code:
+**4. Open the [notebook](notebooks/credit_card_fraud_detection_random_forest.ipynb)** in JupyterLab or VS Code:
 
 ```bash
 jupyter lab notebooks/credit_card_fraud_detection_random_forest.ipynb
@@ -152,6 +172,10 @@ If I extended the project, I would start with a chronological holdout, examine p
 
 ## Data credit
 
-The dataset comes from the **Machine Learning Group at Université Libre de Bruxelles (ULB)** in collaboration with **Worldline**. See the [Kaggle source page](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) for access and attribution details. The data remain subject to their original terms; this repository does not redistribute the CSV.
+The dataset comes from the **Machine Learning Group at Université Libre de Bruxelles (ULB)** in collaboration with **Worldline**. The [original dataset listing on Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) is the primary source for provenance and attribution.
 
-**Portfolio:** [GitHub profile](https://github.com/Anahita-Pouladi) · [Kaggle notebooks profile](https://www.kaggle.com/code/anahitapouladi)
+For easier access, I provide a separate [downloadable archive in GitHub Releases](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/tag/dataset-v1.0). The archive includes `creditcard.csv` and `DATASET_LICENSE.txt`, which contains source attribution and links to license information. **The dataset is not my original work**; the data remain subject to the original providers' terms. The CSV is not committed to Git history.
+
+**Portfolio:** 
+[GitHub profile](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest)
+[Kaggle notebooks profile](https://www.kaggle.com/code/anahitapouladi)
