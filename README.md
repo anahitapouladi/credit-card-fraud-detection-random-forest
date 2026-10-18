@@ -178,4 +178,4 @@ For easier access, I provide a separate [downloadable archive in GitHub Releases
 
 **Portfolio:** 
 [GitHub profile](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest)
-[Kaggle notebooks profile](https://www.kaggle.com/code/anahitapouladi)
+[Kaggle notebooks profile](https://www.kaggle.com/code/anahitapouladi/credit-card-fraud-detection-random-forest)
