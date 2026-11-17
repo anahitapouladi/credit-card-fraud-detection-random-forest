@@ -1,181 +1,144 @@
 # Credit Card Fraud Detection with Random Forest
 
-**A practical look at fraud detection when the positive class is rare.**
+**A learning project about what happens when fraud is rare — and why accuracy alone is misleading.**
 
-Can a Random Forest catch a useful share of fraudulent transactions without creating an unmanageable number of false alerts? I explored that question with the ULB credit card dataset. I compare the forest with a Logistic Regression baseline, choose an illustrative alert threshold on validation data, and report what happens on a held-out test set.
+An always-legitimate classifier would reach roughly **99.83% accuracy** on the original ULB dataset while catching no fraud. I compared a Logistic Regression baseline and a Random Forest, then used the validation set to explore a decision threshold. The held-out test set illustrates the trade-off: **68 of 95 fraud cases detected, 27 missed, and 2 false alerts**.
 
-This is a **learning and portfolio project**, not a production fraud detection system.
+> **Scope:** Educational portfolio analysis of historical, anonymized transactions. This is **not** a production fraud detection system or a claim about future performance. Metrics below are from the notebook's **saved run**. A later re-execution on the full CSV reproduced the headline results exactly (68 of 95 caught, 27 missed, 2 false alerts, threshold ≈0.5463); secondary decimals can vary slightly with library versions.
 
 ## At a glance
 
-| Item | Approach |
+| Item | Details |
 |---|---|
-| Task | Binary classification: legitimate (`0`) vs. fraud (`1`) |
-| Dataset | [Original ULB dataset on Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) · [Direct ZIP download (GitHub Release)](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/download/dataset-v1.0/creditcard.zip) |
-| Models | Logistic Regression baseline; Random Forest |
-| Data split | Stratified train / validation / test (approximately 60% / 20% / 20%) |
-| Primary evaluation | Average precision (AP), precision, recall, F1, and confusion matrices |
-| Threshold choice | Validation-only search with an illustrative 80% recall target |
-| Reproducibility | Fixed random seed (`42`); preprocessing fitted on training data |
+| Dataset | [ULB / Worldline credit card fraud data on Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) |
+| Original dataset | 284,807 transactions; 492 fraud cases (about 0.173%; Kaggle's description rounds to 0.172%) |
+| Analysis dataset | 283,726 rows after removing 1,081 exact duplicate rows, including 19 fraud rows |
+| Models | Logistic Regression (baseline) and Random Forest |
+| Data split | Stratified train / validation / test, approximately 60% / 20% / 20% |
+| Model comparison | Average precision (AP), precision–recall curves, ROC-AUC, precision, recall, F1 |
+| Threshold | Selected on validation data only, using an *illustrative* 80% fraud-recall goal |
+| Notebook | [`notebooks/credit_card_fraud_detection_random_forest.ipynb`](notebooks/credit_card_fraud_detection_random_forest.ipynb) |
 
-## Key results
+## Results from the saved run
 
-The figures below come from the **saved run in the notebook**. They are not performance guarantees for future transactions.
-
-### Model comparison on validation
+### Validation: comparison at the default 0.5 threshold
 
 | Metric | Logistic Regression | Random Forest |
 |---|---:|---:|
-| Average precision (AP) | 0.7868 | **0.8742** |
+| Average precision (AP) | 0.7876 | **0.8742** |
 | ROC-AUC | **0.9790** | 0.9554 |
-| Precision at threshold 0.5 | 0.0538 | **0.9186** |
-| Recall at threshold 0.5 | **0.9043** | 0.8404 |
-| Fraud cases caught (out of 94) | 85 | 79 |
-| False alarms | 1,494 | 7 |
+| Precision | 0.0538 | **0.9186** |
+| Recall | **0.9043** | 0.8404 |
+| Fraud caught (of 94) | 85 | 79 |
+| False alerts | 1,495 | 7 |
 
-A 0.5 threshold is not a like-for-like operating point for these models: their class weights and score distributions differ. I use **AP and precision–recall curves** to compare ranking performance, and report alert counts to show what each threshold would mean in practice.
+The default **0.5** threshold is **not an equivalent operating point** between these models because their class weights and score distributions differ. I therefore use AP and precision–recall curves for the main ranking comparison. Alert counts describe what happened at these particular thresholds, not a controlled business-cost comparison.
 
-### Random Forest on the held-out test set
+### Random Forest: final held-out test
 
-I selected a threshold of approximately **0.5463** using validation data only. In the saved run, the selected threshold and the default threshold of 0.5 produced the **same test predictions**.
+The threshold selected on validation was approximately **0.5463**. It produced the **same test classifications as 0.5** in this saved run — it did **not** improve test performance over the default threshold.
 
-| Test result | Value |
+| Test measure | Result |
 |---|---:|
-| Average precision (AP) | 0.8149 |
+| Average precision (AP) | **0.8149** |
 | ROC-AUC | 0.9338 |
 | Fraud precision | **97.1%** |
 | Fraud recall | **71.6%** |
 | Fraud F1 | 0.8242 |
 | Fraud caught | 68 of 95 |
 | Fraud missed | 27 |
-| False alarms | 2 |
+| False alerts | 2 |
 | Approximate 95% Wilson interval for recall | 61.8%–79.7% |
 
-**What changed between validation and test?** Recall and AP fell, while precision rose because the model flagged only two legitimate test transactions. The illustrative 80% recall target was **not achieved** on the test set. The low number of false alarms is encouraging, but missing 27 fraud cases is still a serious limitation.
+The validation-selected threshold reached **83.0% recall on validation**, but test recall was **71.6%**. The illustrative 80% target was **not met on test**. The Wilson interval describes sampling uncertainty under simplified independence assumptions; it does not account for drift, related transactions, or model-selection uncertainty.
 
-## Selected figures
+## Figures
 
-The plots below are exported from the notebook's saved outputs. The confusion matrix uses row-normalized shading so the fraud cases remain visible, while the labels show actual counts.
+The images below were extracted from the notebook's **saved plot outputs**. They have not been regenerated from the raw CSV as part of this review.
 
-### Validation: precision–recall curves
+### Precision–recall curves (validation)
 
-![Validation precision–recall curves comparing Logistic Regression and Random Forest](images/validation_precision_recall.png)
+![Validation precision–recall curves](images/validation_precision_recall.png)
 
-The forest has higher average precision on this validation split, even though Logistic Regression has higher ROC-AUC.
+### Precision–recall threshold trade-off (validation)
 
-### Validation: threshold trade-off
+![Random Forest validation precision and recall across thresholds](images/validation_threshold_tradeoff.png)
 
-![Precision and recall across Random Forest decision thresholds](images/validation_threshold_tradeoff.png)
+### Confusion matrix (held-out test)
 
-The selected threshold meets the illustrative recall target on validation; it is not a business-optimized cutoff.
+![Held-out test confusion matrix, with row-normalized colors and actual counts](images/test_confusion_matrix.png)
 
-### Held-out test: confusion matrix
+Colors represent fractions within each **actual class**; annotations show counts and row percentages. In this run, both candidate thresholds generated the same test predictions.
 
-![Row-normalized Random Forest test confusion matrix showing 68 caught frauds, 27 misses, and 2 false alarms](images/test_confusion_matrix.png)
+### Feature importance (Random Forest)
 
-The default and validation-selected thresholds made identical test predictions in this run. The colors represent the fraction of each **actual** class; the annotations give transaction counts and row percentages.
+![Top Random Forest impurity-based feature importances](images/random_forest_feature_importance.png)
 
-### Random Forest feature importance
+These are impurity-based importances, **not causal explanations**. Five more exported plots are available in [`images/`](images/); all nine also appear in the notebook.
 
-![Top Random Forest features ranked by impurity-based importance](images/random_forest_feature_importance.png)
+## Workflow
 
-These are impurity-based importances, not causal explanations. The remaining five figures are available in [`images/`](images/), and all nine plots appear in the [notebook](notebooks/credit_card_fraud_detection_random_forest.ipynb).
+1. Verified the schema, missing values, class balance, and exact duplicates.
+2. Removed 1,081 exact duplicate rows **before splitting** as a documented choice. Without transaction IDs, identical rows cannot automatically be classified as erroneous transactions; this exclusion included 19 fraud rows.
+3. Created stratified train, validation, and test sets. Exploratory analyses shown in the notebook use training data.
+4. Trained a standardized Logistic Regression baseline and a Random Forest in scikit-learn pipelines, fitting preprocessing only on training data.
+5. Compared validation ranking and classification metrics; selected a threshold using validation predictions without inspecting test labels.
+6. Applied the selected forest to the held-out test once for final reporting and calculated an approximate Wilson interval for fraud recall.
 
-## What I did
+Additional methodological details: [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md). Interpretation and next steps: [`docs/RESULTS_AND_LIMITATIONS.md`](docs/RESULTS_AND_LIMITATIONS.md).
 
-1. Checked the dataset schema, missing values, class balance, and duplicate rows.
-2. Removed **1,081 exact duplicate rows** before splitting, while documenting why that choice is debatable without transaction IDs.
-3. Split the data into stratified training, validation, and test sets; kept exploratory analysis on training data.
-4. Explored transaction amounts, elapsed time, correlations, and IQR-based outlier patterns.
-5. Trained Logistic Regression and Random Forest using scikit-learn pipelines.
-6. Compared validation metrics and precision–recall curves; selected a threshold **without looking at test labels**.
-7. Evaluated the selected forest once on test data, including a Wilson interval for fraud recall.
-
-The notebook includes short explanations of **Gini impurity, bootstrap sampling, feature randomness, class weighting, precision–recall trade-offs, and statistical uncertainty** alongside the code.
-
-## Repository layout
+## Repository structure
 
 ```text
 credit-card-fraud-detection-random-forest/
 ├── README.md
-├── .gitignore
 ├── requirements.txt
+├── .gitignore
 ├── notebooks/
 │   └── credit_card_fraud_detection_random_forest.ipynb
 ├── docs/
 │   ├── METHODOLOGY.md
 │   └── RESULTS_AND_LIMITATIONS.md
 ├── images/
-│   ├── validation_precision_recall.png
-│   ├── validation_threshold_tradeoff.png
-│   ├── test_confusion_matrix.png
-│   ├── random_forest_feature_importance.png
-│   └── ... (five additional plots)
+│   └── 9 exported figures (.png)
 └── data/
     └── .gitkeep
 ```
 
-The raw CSV is **not tracked in the Git repository**. A downloadable archive is provided separately in [GitHub Releases](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/tag/dataset-v1.0).
+## How to run
 
-## Download the dataset (no Kaggle account required)
+1. Clone this repository or download its ZIP.
+2. Get the original [`creditcard.csv` from the ULB Kaggle dataset page](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud). Place it at `data/creditcard.csv` (or beside the notebook). **The dataset is not included in this repository or archive.**
+3. Use an appropriate Python environment (the saved notebook metadata reports **Python 3.10.9**), then install the listed dependencies:
 
-**[Download `creditcard.zip` directly (about 63.3 MB)](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/download/dataset-v1.0/creditcard.zip)**
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
 
-This link downloads the dataset archive from this project's [GitHub Release (`dataset-v1.0`)](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/tag/dataset-v1.0). You do **not** need a Kaggle account to use this download.
+4. Launch the notebook and run its cells in order:
 
-1. Download `creditcard.zip` from the link above.
-2. Extract the archive to find `creditcard.csv` and `DATASET_LICENSE.txt`.
-3. Copy **`creditcard.csv`** into the project's **`data/`** folder. The final location should be `data/creditcard.csv`.
-4. Keep `DATASET_LICENSE.txt` for source and license information; it is not a model input.
+   ```bash
+   jupyter lab notebooks/credit_card_fraud_detection_random_forest.ipynb
+   ```
 
-**Alternative:** Obtain the CSV from the [original ULB dataset listing on Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud). The GitHub Release is a convenience copy, **not an official new version of the source dataset**. Its `dataset-v1.0` tag identifies the download package for this project.
+The loader also checks `creditcard.csv` in the current directory, `data/`, `../data/`, and Kaggle input subfolders. **On Kaggle**, upload the notebook, attach the original ULB dataset with **Add Input**, and run all cells. The saved figures and outputs are historical notebook outputs, not evidence of a newly validated end-to-end run in another environment.
 
-## Run the notebook locally
-
-**1. Get the project.** Clone this repository, or use GitHub's **Code → Download ZIP** and extract it:
-
-```bash
-git clone https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest.git
-cd credit-card-fraud-detection-random-forest
-```
-
-**2. Get the dataset.** Follow the [download and extraction steps above](#download-the-dataset-no-kaggle-account-required) so that `data/creditcard.csv` exists.
-
-**3. Install the dependencies** in a Python environment:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-**4. Open the [notebook](notebooks/credit_card_fraud_detection_random_forest.ipynb)** in JupyterLab or VS Code:
-
-```bash
-jupyter lab notebooks/credit_card_fraud_detection_random_forest.ipynb
-```
-
-Run the cells in order. The loader accepts `data/creditcard.csv` from the repository root, `../data/creditcard.csv` from `notebooks/`, or a `creditcard.csv` file beside the notebook. It also searches Kaggle input folders. The original saved run used Python 3.10.9; `requirements.txt` provides compatible version ranges rather than a fully locked environment.
-
-**On Kaggle:** Upload the notebook, attach the [ULB dataset](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) using **Add Input**, and run all cells. Kaggle may use a different Python/library environment, so small numerical or display differences are possible.
-
-> The notebook contains saved outputs from an earlier execution on the source dataset. Those outputs are examples; rerunning requires the CSV and can take time because the forest trains 150 trees.
-
-## Documentation
-
-- [Methodology and statistical concepts](docs/METHODOLOGY.md) — data handling, the models, metrics, and threshold selection.
-- [Results and limitations](docs/RESULTS_AND_LIMITATIONS.md) — interpretation of the saved run, uncertainty, and next experiments.
+`requirements.txt` provides broad package version bounds, **not a lock file**. Headline results were reproduced on the full CSV with a different scikit-learn version; small differences in secondary metrics (third or fourth decimal) are expected across versions.
 
 ## Limitations and next steps
 
-This dataset covers a short historical period and uses anonymized PCA components. A random split does not measure how well the model handles **future fraud patterns**. Removing duplicate rows also removed 19 fraud observations, and the Random Forest hyperparameters were **not systematically tuned**.
+- The source covers **two days in September 2013**. A random split is not an out-of-time or external validation; the `Time` feature could capture patterns particular to this observation window.
+- Removing duplicate rows excluded **19 fraud observations**; a sensitivity check retaining duplicates would be valuable.
+- Random Forest hyperparameters were **not systematically tuned**. The Logistic Regression baseline was not comprehensively optimized either.
+- Threshold selection used an illustrative recall goal, **not** estimated fraud losses, probability calibration, or operational review capacity.
+- Precision depends on the class prevalence and review policy. The test results do **not** establish deployment readiness.
 
-If I extended the project, I would start with a chronological holdout, examine probability calibration and alert-review costs, and check threshold stability across validation samples. I would also compare against a better-tuned linear baseline.
+Next experiments: time-based holdout, duplicate-handling sensitivity, alert-capacity comparison, calibration and threshold stability, and stronger baseline tuning.
 
-## Data credit
+## Data source and credits
 
-The dataset comes from the **Machine Learning Group at Université Libre de Bruxelles (ULB)** in collaboration with **Worldline**. The [original dataset listing on Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) is the primary source for provenance and attribution.
+Original dataset: [Credit Card Fraud Detection — Machine Learning Group, Université Libre de Bruxelles / Worldline](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud). All source rights and usage conditions remain with their respective owners. No claim of dataset ownership is made here. Obtain the dataset from the original source and review its displayed licensing terms before redistribution.
 
-For easier access, I provide a separate [downloadable archive in GitHub Releases](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest/releases/tag/dataset-v1.0). The archive includes `creditcard.csv` and `DATASET_LICENSE.txt`, which contains source attribution and links to license information. **The dataset is not my original work**; the data remain subject to the original providers' terms. The CSV is not committed to Git history.
+The notebook cites: Dal Pozzolo, A., Caelen, O., Johnson, R. A., & Bontempi, G. (2015), *Calibrating Probability with Undersampling for Unbalanced Classification*.
 
-**Portfolio:** 
-[GitHub profile](https://github.com/anahitapouladi/credit-card-fraud-detection-random-forest)
-[Kaggle notebooks profile](https://www.kaggle.com/code/anahitapouladi/credit-card-fraud-detection-random-forest)
+**Portfolio:** [GitHub profile](https://github.com/anahitapouladi) · [Kaggle profile](https://www.kaggle.com/anahitapouladi)
