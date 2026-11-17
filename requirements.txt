@@ -1,8 +1,11 @@
-# Compatible version ranges, not a lockfile for the original run.
+# Dependency ranges for running the notebook locally; not a lockfile.
+# Saved Kaggle notebook metadata: Python 3.10.9.
+# Exact package versions from the original run were not recorded.
 numpy>=1.24,<3
 pandas>=1.5,<3
 scikit-learn>=1.2,<2
 matplotlib>=3.7,<4
-seaborn>=0.12,<1
+seaborn>=0.12,<0.14
+ipython>=8,<10
 ipykernel>=6,<8
 jupyterlab>=4,<5
