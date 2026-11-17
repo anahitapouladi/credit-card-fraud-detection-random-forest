@@ -8,13 +8,13 @@ These numbers come from the **saved execution of the notebook** on the ULB sourc
 
 | Metric | Logistic Regression | Random Forest |
 |---|---:|---:|
-| Average precision (AP) | 0.7868 | **0.8742** |
+| Average precision (AP) | 0.7876 | **0.8742** |
 | ROC-AUC | **0.9790** | 0.9554 |
 | Precision at 0.5 | 0.0538 | **0.9186** |
 | Recall at 0.5 | **0.9043** | 0.8404 |
 | F1 at 0.5 | 0.1016 | **0.8778** |
 
-At threshold 0.5, Logistic Regression caught **85/94** validation fraud cases but flagged **1,494** legitimate transactions. Random Forest caught **79/94** and flagged **7** legitimate transactions.
+At threshold 0.5, Logistic Regression caught **85/94** validation fraud cases but flagged **1,495** legitimate transactions. Random Forest caught **79/94** and flagged **7** legitimate transactions.
 
 This is a useful illustration of alert workload, but **not a fair threshold-by-threshold comparison**: Logistic Regression uses balanced class weights, and the models' score distributions differ. I compare ranking with AP and the precision–recall curves instead of declaring a winner solely from the 0.5 rows.
 
@@ -72,4 +72,4 @@ I would first test a **chronological holdout** and examine how stable the thresh
 
 ## Reproducing these results
 
-Follow the [setup instructions in the README](../README.md#run-the-notebook). The source CSV is not distributed in this repository. Library versions and execution environments may cause small differences from the saved outputs.
+Follow the [setup instructions in the README](../README.md#how-to-run). The source CSV is not distributed in this repository. Library versions and execution environments may cause small differences from the saved outputs.
